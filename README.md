@@ -80,30 +80,67 @@ Existing output files are not overwritten.
 
 ## Examples
 
-The `examples/` directory includes `colors.ppm`, a small RGB image.
+The `examples/` directory contains two grayscale images designed to highlight
+the strengths of each compression algorithm.
 
-Compress it with canonical Huffman coding:
+### RLE example
+
+`rle-blocks.pgm` contains large solid regions, so its canonical raster has long
+runs of identical bytes.
+
+Compress it:
 
 ```sh
-npbc compress --algorithm huffman examples/colors.ppm examples/colors.npbc
+npbc compress --algorithm rle examples/rle-blocks.pgm examples/rle-blocks.npbc
 ```
 
-Display information about the compressed file:
+Inspect the result:
 
 ```sh
-npbc info examples/colors.npbc
+npbc info examples/rle-blocks.npbc
 ```
 
-Verify its integrity:
+Verify it:
 
 ```sh
-npbc verify examples/colors.npbc
+npbc verify examples/rle-blocks.npbc
 ```
 
-Restore the image:
+Restore it:
 
 ```sh
-npbc decompress examples/colors.npbc examples/colors-restored.ppm
+npbc decompress examples/rle-blocks.npbc examples/rle-blocks-restored.pgm
+```
+
+### Huffman example
+
+`huffman-pattern.pgm` uses a small set of byte values with uneven frequencies,
+but avoids long repeated runs. This favors Huffman coding over RLE.
+
+Compress it:
+
+```sh
+npbc compress --algorithm huffman \
+    examples/huffman-pattern.pgm examples/huffman-pattern.npbc
+```
+
+Inspect the result:
+
+```sh
+npbc info examples/huffman-pattern.npbc
+```
+
+Verify it:
+
+```sh
+npbc verify examples/huffman-pattern.npbc
+```
+
+Restore it:
+
+```sh
+npbc decompress \
+    examples/huffman-pattern.npbc examples/huffman-pattern-restored.pgm
 ```
 
 RLE generally works best with long repeated byte sequences. Huffman coding is
